@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.userlist.R
 import com.example.userlist.features.User
 
-class UserAdapter(private val userList: List<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter(
+    private val userList: List<User>,
+    private val onUserClick: (User) -> Unit
+) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     // ViewHolder: This holds references to the views in one row.
     // We "find" the views once here so we don't have to keep searching for them
@@ -41,6 +44,11 @@ class UserAdapter(private val userList: List<User>) : RecyclerView.Adapter<UserA
         // update the UI with the data
         holder.nameText.text = currentUser.name
         holder.emailText.text = currentUser.email
+
+        // Set the click listener on the whole row
+        holder.itemView.setOnClickListener {
+            onUserClick(currentUser)
+        }
     }
 
     // return the user list size

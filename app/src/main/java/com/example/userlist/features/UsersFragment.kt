@@ -1,5 +1,6 @@
 package com.example.userlist.features
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -9,7 +10,7 @@ import com.example.userlist.databinding.UsersFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UsersFragment: Fragment(R.layout.users_fragment) {
+class UsersFragment : Fragment(R.layout.users_fragment) {
 
     // This allows us to access the RecyclerView from the XML
     private var _binding: UsersFragmentBinding? = null
@@ -19,7 +20,13 @@ class UsersFragment: Fragment(R.layout.users_fragment) {
 
         _binding = UsersFragmentBinding.bind(view)
 
-        val adapter = UserAdapter(getDummyUsers())
+        val adapter = UserAdapter(getDummyUsers()) { clickedUser ->
+            val intent = Intent(requireContext(), DetailActivity::class.java).apply {
+                putExtra("USER_DATA", clickedUser)
+            }
+            // navigate to DetailActivity
+            startActivity(intent)
+        }
 
         binding.userList.adapter = adapter
     }
@@ -37,10 +44,7 @@ fun getDummyUsers(): List<User> {
 
     for (i in 1..10) {
         val dummyAddress = Address(
-            street = "Street $i",
-            suite = "Apt. $i",
-            city = "City",
-            zipcode = "12345-$i"
+            street = "Street $i", suite = "Apt. $i", city = "City", zipcode = "12345-$i"
         )
 
         val dummyCompany = Company(
