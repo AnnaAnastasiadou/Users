@@ -6,8 +6,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.userlist.databinding.ActivityMainBinding
-import com.example.userlist.features.ProfileFragment
-import com.example.userlist.features.UsersFragment
+import com.example.userlist.features.profile.ProfileFragment
+import com.example.userlist.features.users.UsersFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

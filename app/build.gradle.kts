@@ -1,9 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -56,10 +55,9 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.gson)
     debugImplementation(libs.okhttp.logging)
-    ksp("com.google.dagger:hilt-android-compiler:2.57.1")
+    ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
-
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.androidx.hilt.compiler)
-
+    implementation(libs.androidx.fragment.ktx)
 }

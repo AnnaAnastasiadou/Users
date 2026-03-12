@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".features.DetailActivity"
+            android:name=".features.details.DetailActivity"
             android:exported="false"/>
     </application>
 

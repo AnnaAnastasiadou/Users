@@ -3,6 +3,9 @@ package com.example.userlist.data.repository
 import com.example.userlist.data.remote.NetworkResult
 import com.example.userlist.data.remote.UserApi
 import com.example.userlist.data.remote.UserDto
+import com.example.userlist.features.Address
+import com.example.userlist.features.Company
+import com.example.userlist.features.User
 import org.json.JSONObject
 import retrofit2.HttpException
 import retrofit2.Response
@@ -13,6 +16,7 @@ import javax.inject.Inject
 class UsersRepositoryImpl @Inject constructor(
     private val userApi: UserApi
 ) : UsersRepository {
+
     private suspend fun <T> safeCall(
         call: suspend () -> Response<T>
     ): NetworkResult<T> {
@@ -41,11 +45,45 @@ class UsersRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllUsers(): NetworkResult<List<UserDto>> =
-        safeCall { userApi.getAllUsers() }
+    private var cachedUsers: List<UserDto>? = null
+
+    override fun getCachedUsers(): List<UserDto>? {
+        return cachedUsers
+    }
+
+    private val dummyList: List<User> by lazy {
+        (1..10).map { i ->
+            User(
+                id = i,
+                name = "User Number $i",
+                username = "user_$i",
+                email = "user$i@example.com",
+                address = Address(
+                    street = "Street $i", suite = "Apt. $i", city = "City", zipcode = "12345-$i"
+                ),
+                phone = "555-010$i",
+                website = "www.user$i.com",
+                company = Company(
+                    name = "Company $i LLC",
+                    catchPhrase = "Innovating the future of $i",
+                    bs = "synergize scalable $i"
+                )
+            )
+        }
+    }
 
 
-    override suspend fun getUserById(id: Int): NetworkResult<UserDto> =
-        safeCall { userApi.getUserById(id) }
+    override fun getDummyUsers(): List<User> = dummyList
 
+    override suspend fun getAllUsers(): NetworkResult<List<UserDto>> {
+        val response = safeCall { userApi.getAllUsers() }
+        if (response is NetworkResult.Success) {
+            cachedUsers = response.data
+        }
+        return response
+    }
+
+    override suspend fun getUserById(id: Int): UserDto? {
+        return cachedUsers?.find { it.id == id }
+    }
 }

@@ -9,7 +9,7 @@ import com.example.userlist.R
 import com.example.userlist.features.User
 
 class UserAdapter(
-    private val userList: List<User>,
+    private var userList: List<User>,
     private val onUserClick: (User) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
@@ -32,6 +32,11 @@ class UserAdapter(
         // inflate: turn into a kotlin object you can interact with
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
         return UserViewHolder(view)
+    }
+
+    fun updateData(newUsers: List<User>) {
+        this.userList = newUsers
+        notifyDataSetChanged()
     }
 
     // This is called every time a row scrolls into view.

@@ -1,9 +1,11 @@
-package com.example.userlist.features
+package com.example.userlist.features.details
 
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.userlist.databinding.ActivityDetailsBinding
+import com.example.userlist.features.Address
+import com.example.userlist.features.Company
+import com.example.userlist.features.User
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,14 +39,27 @@ class DetailActivity: AppCompatActivity() {
 
         // Data Retrieval: We extract the information sent via the Intent.
         // Intents are like "envelopes" passed between activities.
-        val user = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // for Android 13+ this is the modern, safer way
-            intent.getParcelableExtra("USER_DATA", User::class.java)
-        } else {
-            // the old way
-            @Suppress("Deprecation")
-            intent.getParcelableExtra<User>("USER_DATA")
-        }
+        val userId = intent.getIntExtra("USER_ID", -1)
+
+        val user = User(
+            id = userId,
+            name = "User Number $userId",
+            username = "user_$userId",
+            email = "user$userId@example.com",
+            address = Address(
+                street = "Street $userId",
+                suite = "Apt. $userId",
+                city = "City",
+                zipcode = "12345-$userId"
+            ),
+            phone = "555-010$userId",
+            website = "www.user$userId.com",
+            company = Company(
+                name = "Company $userId LLC",
+                catchPhrase = "Innovating the future of $userId",
+                bs = "synergize scalable $userId"
+            )
+        )
 
         user?.let {
             // update the action bar

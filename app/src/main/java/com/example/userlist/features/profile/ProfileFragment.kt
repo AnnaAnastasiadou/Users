@@ -1,4 +1,4 @@
-package com.example.userlist.features
+package com.example.userlist.features.profile
 
 import android.os.Bundle
 import android.view.View
