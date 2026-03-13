@@ -3,7 +3,11 @@ package com.example.userlist.features.details
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -25,9 +29,14 @@ class DetailActivity : AppCompatActivity() {
         // Activity binding is straightforward: inflate once and use it until
         // the Activity is finished.
         binding = ActivityDetailsBinding.inflate((layoutInflater))
-
         // Attach the UI: This puts the 'root' view of our layout on the screen.
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBarLayout) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(top = systemBars.top)
+            insets
+        }
 
         // Toolbar Setup: We tell Android to treat our XML toolbar as the official Action Bar.
         // This allows us to use helper methods like 'supportActionBar'.
