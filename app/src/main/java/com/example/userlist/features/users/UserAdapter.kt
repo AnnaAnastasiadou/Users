@@ -1,4 +1,4 @@
-package com.example.userlist.adapter
+package com.example.userlist.features.users
 
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +19,15 @@ class UserAdapter(
     class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameText: TextView = itemView.findViewById(R.id.tv_name)
         val emailText: TextView = itemView.findViewById(R.id.tv_email)
+
+        fun bind(user: User, onUserClick: (User) -> Unit) {
+            nameText.text = user.name
+            emailText.text = user.email
+
+            itemView.setOnClickListener {
+                onUserClick(user)
+            }
+        }
     }
 
     // This method only runs for NEW rows.
@@ -45,15 +54,7 @@ class UserAdapter(
         holder: UserViewHolder,
         position: Int
     ) {
-        val currentUser = userList[position]
-        // update the UI with the data
-        holder.nameText.text = currentUser.name
-        holder.emailText.text = currentUser.email
-
-        // Set the click listener on the whole row
-        holder.itemView.setOnClickListener {
-            onUserClick(currentUser)
-        }
+        holder.bind(userList[position], onUserClick)
     }
 
     // return the user list size

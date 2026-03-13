@@ -10,9 +10,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.userlist.R
-import com.example.userlist.adapter.UserAdapter
+import com.example.userlist.features.users.UserAdapter
 import com.example.userlist.databinding.ProfileFragmentBinding
 import com.example.userlist.features.User
+import com.example.userlist.features.renderState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -33,11 +34,11 @@ class ProfileFragment : Fragment(R.layout.profile_fragment) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    binding.viewStates.progressBar.isVisible = state.isLoading
-                    binding.userDetails.isVisible = state.data != null
-                    binding.viewStates.errorLayout.isVisible = state.error != null
-
-                    state.error?.let { binding.viewStates.tvErrorMessage.text = it }
+                    binding.viewStates.renderState(
+                        isLoading = state.isLoading,
+                        error = state.error,
+                        contentView = binding.userDetailsView
+                    )
 
                     state.data?.let { user: User ->
                         binding.userDetailsView.setModel(user)

@@ -14,6 +14,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    companion object {
+        const val TAG_HOME = "home_fragment"
+        const val TAG_PROFILE = "profile_fragment"
+    }
     private lateinit var binding: ActivityMainBinding
     private var activeFragment: Fragment? = null
 
@@ -31,12 +35,12 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    switchFragment("HOME")
+                    switchFragment(TAG_HOME)
                     true// Return true to visually select the item in the UI
                 }
 
                 R.id.navigation_profile -> {
-                    switchFragment("PROFILE")
+                    switchFragment(TAG_PROFILE)
                     true
                 }
 
@@ -46,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         // Only load the first fragment if this is a fresh start
         if (savedInstanceState == null) {
-            switchFragment("HOME")
+            switchFragment(TAG_HOME)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { v, insets ->
@@ -61,8 +65,8 @@ class MainActivity : AppCompatActivity() {
 
         // Reuse or create fragment : check if fragment already exists in memory
         val targetFragment: Fragment = fm.findFragmentByTag(tag) ?: when (tag) {
-            "HOME" -> UsersFragment()
-            "PROFILE" -> ProfileFragment()
+            TAG_HOME -> UsersFragment()
+            TAG_PROFILE -> ProfileFragment()
             else -> UsersFragment()
         }
 

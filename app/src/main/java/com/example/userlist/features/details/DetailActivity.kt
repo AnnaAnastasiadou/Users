@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.userlist.databinding.ActivityDetailsBinding
+import com.example.userlist.features.renderState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -57,12 +58,11 @@ class DetailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    binding.userDetails.isVisible = state.data != null
-                    binding.viewStates.errorLayout.isVisible = state.error != null
-                    binding.viewStates.progressBar.isVisible = state.isLoading
-                    state.error?.let {
-                        binding.viewStates.tvErrorMessage.text = it
-                    }
+                    binding.viewStates.renderState(
+                        isLoading = state.isLoading,
+                        error = state.error,
+                        contentView = binding.userDetailsView
+                    )
                     state.data?.let {
                         supportActionBar?.title = it.name
                         binding.userDetailsView.setModel(it)

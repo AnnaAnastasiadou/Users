@@ -10,10 +10,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.userlist.R
-import com.example.userlist.adapter.UserAdapter
+import com.example.userlist.features.users.UserAdapter
 import com.example.userlist.data.repository.UsersRepository
 import com.example.userlist.databinding.UsersFragmentBinding
 import com.example.userlist.features.details.DetailActivity
+import com.example.userlist.features.renderState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,12 +51,11 @@ class UsersFragment : Fragment(R.layout.users_fragment) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    // Handle Loading Spinner
-                    binding.viewStates.progressBar.isVisible = state.isLoading
-                    binding.userList.isVisible = state.data != null
-                    binding.viewStates.errorLayout.isVisible = state.error != null
-
-                    state.error?.let { binding.viewStates.tvErrorMessage.text = it }
+                    binding.viewStates.renderState(
+                        isLoading = state.isLoading,
+                        error = state.error,
+                        contentView = binding.userList
+                    )
 
                     state.data?.let { users ->
                         adapter.updateData(users)
