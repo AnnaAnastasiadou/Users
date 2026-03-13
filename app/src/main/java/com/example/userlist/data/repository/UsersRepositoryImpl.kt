@@ -83,7 +83,7 @@ class UsersRepositoryImpl @Inject constructor(
         return response
     }
 
-    override suspend fun getUserById(id: Int): UserDto? {
+    override fun getUserById(id: Int): UserDto? {
         return cachedUsers?.find { it.id == id }
     }
 }

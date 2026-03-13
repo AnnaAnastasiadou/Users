@@ -1,8 +1,9 @@
 package com.example.userlist.features.details
 
-import com.example.userlist.data.remote.UserDto
+import com.example.userlist.features.User
 
 data class DetailsUiState(
     val isLoading: Boolean = false,
-    val data: UserDto? = null
+    val data: User? = null,
+    val error: String? = null
 )

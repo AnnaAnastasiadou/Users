@@ -1,20 +1,27 @@
 package com.example.userlist.features.details
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.userlist.databinding.ActivityDetailsBinding
 import com.example.userlist.features.Address
 import com.example.userlist.features.Company
 import com.example.userlist.features.User
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DetailActivity: AppCompatActivity() {
+class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailsBinding
+    private val viewModel: DetailsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Inflate the layout: This converts the XML file into a live Kotlin object.
         binding = ActivityDetailsBinding.inflate((layoutInflater))
 
@@ -41,31 +48,21 @@ class DetailActivity: AppCompatActivity() {
         // Intents are like "envelopes" passed between activities.
         val userId = intent.getIntExtra("USER_ID", -1)
 
-        val user = User(
-            id = userId,
-            name = "User Number $userId",
-            username = "user_$userId",
-            email = "user$userId@example.com",
-            address = Address(
-                street = "Street $userId",
-                suite = "Apt. $userId",
-                city = "City",
-                zipcode = "12345-$userId"
-            ),
-            phone = "555-010$userId",
-            website = "www.user$userId.com",
-            company = Company(
-                name = "Company $userId LLC",
-                catchPhrase = "Innovating the future of $userId",
-                bs = "synergize scalable $userId"
-            )
-        )
-
-        user?.let {
-            // update the action bar
-            supportActionBar?.title = it.name
-            // trigger the ui updates
-            binding.userDetailsView.setModel(it)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    binding.userDetails.isVisible = state.data != null
+                    binding.viewStates.errorLayout.isVisible = state.error != null
+                    binding.viewStates.progressBar.isVisible = state.isLoading
+                    state.error?.let {
+                        binding.viewStates.tvErrorMessage.text = it
+                    }
+                    state.data?.let {
+                        supportActionBar?.title = it.name
+                        binding.userDetailsView.setModel(it)
+                    }
+                }
+            }
         }
     }
 }

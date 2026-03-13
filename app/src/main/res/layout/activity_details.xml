@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
@@ -17,9 +17,11 @@
         />
 
     <ScrollView
+        android:id="@+id/user_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        tools:visibility="visible">
 
     <com.example.userlist.features.UserDetailsView
         android:id="@+id/user_details_view"
@@ -29,6 +31,8 @@
 
     </ScrollView>
 
-
+    <include
+        android:id="@+id/view_states"
+        layout="@layout/states"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
