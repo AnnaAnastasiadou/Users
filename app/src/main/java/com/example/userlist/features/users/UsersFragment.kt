@@ -20,17 +20,24 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class UsersFragment : Fragment(R.layout.users_fragment) {
-
     private val viewModel: UsersViewModel by viewModels()
 
-    // This allows us to access the RecyclerView from the XML
+    // Fragments can outlive their Views (e.g., when a Fragment is moved to the backstack).
+    // If we kept a permanent reference to the View, we would cause a Memory Leak.
+    // '_binding' is the real storage. It is nullable because the View can be null
+    // while the Fragment is still "alive" in the background.
     private var _binding: UsersFragmentBinding? = null
+    // 'binding' is only valid between 'onViewCreated' and 'onDestroyView'.
+    // The '!!' is safe because we only access it when the UI is actually visible.
     private val binding get() = _binding!!
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 'bind' connects our Kotlin object to the already existing View.
+        // It maps the XML IDs so we can use binding.userList instead of findViewById.
         _binding = UsersFragmentBinding.bind(view)
 
+        // Initialize the adapter used for the RecyclerView (list) in the fragment
         val adapter = UserAdapter(emptyList()) { clickedUser ->
             val intent = Intent(requireContext(), DetailActivity::class.java).apply {
                 putExtra("USER_ID", clickedUser.id)

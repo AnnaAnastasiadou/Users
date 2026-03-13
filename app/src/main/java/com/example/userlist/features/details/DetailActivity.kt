@@ -7,22 +7,23 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.userlist.databinding.ActivityDetailsBinding
-import com.example.userlist.features.Address
-import com.example.userlist.features.Company
-import com.example.userlist.features.User
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
+    // We use 'lateinit' because an Activity and its View are created and
+    // destroyed at the exact same time. There is no risk of the View
+    // being gone while the Activity is still alive.
     private lateinit var binding: ActivityDetailsBinding
     private val viewModel: DetailsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Inflate the layout: This converts the XML file into a live Kotlin object.
+        // Activity binding is straightforward: inflate once and use it until
+        // the Activity is finished.
         binding = ActivityDetailsBinding.inflate((layoutInflater))
 
         // Attach the UI: This puts the 'root' view of our layout on the screen.
@@ -43,10 +44,6 @@ class DetailActivity : AppCompatActivity() {
             //   - It allows any 'back-press' listeners (like "Discard changes?" popups) to run first.
             onBackPressedDispatcher.onBackPressed()
         }
-
-        // Data Retrieval: We extract the information sent via the Intent.
-        // Intents are like "envelopes" passed between activities.
-        val userId = intent.getIntExtra("USER_ID", -1)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
