@@ -8,6 +8,7 @@ import com.example.userlist.data.remote.UserDto
 import com.example.userlist.data.repository.UsersRepository
 import com.example.userlist.features.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,8 +30,9 @@ class UsersViewModel @Inject constructor(
     fun loadUsers() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, data = null, error = null) }
-
+            delay(2000)
             when (val response = usersRepository.getAllUsers()) {
+
                 is NetworkResult.Success -> {
                     _uiState.update {
                         it.copy(

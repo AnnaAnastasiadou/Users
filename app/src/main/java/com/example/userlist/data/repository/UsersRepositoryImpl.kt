@@ -6,6 +6,9 @@ import com.example.userlist.data.remote.UserDto
 import com.example.userlist.features.Address
 import com.example.userlist.features.Company
 import com.example.userlist.features.User
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import org.json.JSONObject
 import retrofit2.HttpException
 import retrofit2.Response
@@ -45,10 +48,11 @@ class UsersRepositoryImpl @Inject constructor(
         }
     }
 
-    private var cachedUsers: List<UserDto>? = null
+    private val _cachedUsers = MutableStateFlow<List<UserDto>?>(null)
+//    private var cachedUsers: List<UserDto>? = null
 
     override fun getCachedUsers(): List<UserDto>? {
-        return cachedUsers
+        return _cachedUsers.value
     }
 
     private val dummyList: List<User> by lazy {
@@ -78,12 +82,16 @@ class UsersRepositoryImpl @Inject constructor(
     override suspend fun getAllUsers(): NetworkResult<List<UserDto>> {
         val response = safeCall { userApi.getAllUsers() }
         if (response is NetworkResult.Success) {
-            cachedUsers = response.data
+            _cachedUsers.value = response.data
         }
         return response
     }
 
     override fun getUserById(id: Int): UserDto? {
-        return cachedUsers?.find { it.id == id }
+        return _cachedUsers.value?.find { it.id == id }
+    }
+
+    override fun observeUserById(id: Int): Flow<UserDto?> {
+        return _cachedUsers.map{list -> list?.find { it.id == id }}
     }
 }

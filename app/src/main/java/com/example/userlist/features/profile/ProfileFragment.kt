@@ -37,7 +37,7 @@ class ProfileFragment : Fragment(R.layout.profile_fragment) {
                     binding.viewStates.renderState(
                         isLoading = state.isLoading,
                         error = state.error,
-                        contentView = binding.userDetailsView
+                        contentView = binding.userDetailsContent
                     )
 
                     state.data?.let { user: User ->
