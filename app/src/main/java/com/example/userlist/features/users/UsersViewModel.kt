@@ -30,7 +30,6 @@ class UsersViewModel @Inject constructor(
     fun loadUsers() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, data = null, error = null) }
-            delay(2000)
             when (val response = usersRepository.getAllUsers()) {
 
                 is NetworkResult.Success -> {
